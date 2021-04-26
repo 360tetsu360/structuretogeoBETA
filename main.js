@@ -1,6 +1,6 @@
 var scene
 var group
-var bSize = 0;
+var bSize = 1;
 $(function() {
   var elem = document.getElementById('sizerange');
   var target = document.getElementById('sizevalue');
@@ -54,7 +54,7 @@ var json = {
 				"visible_bounds_offset": [0, 1, 0]
 			},"bones": [
         {
-					"name": "structer",
+					"name": "structure",
 					"pivot": [0, 0, 0],
 					"mirror": false,
 					"cubes": []
