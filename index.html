@@ -9,7 +9,7 @@
   <script type="text/javascript" src="main.js"></script>
   <script src="nbt.js"></script>
 
-  <title>mcstructure to geometry</title>
+  <title>mcstructure editer</title>
   <style>
 body {
   font-family: "Lucida Console";
@@ -90,7 +90,6 @@ li{
   text-align: left;
   position: relative;
   left: 0px;
-  float: left;
 }
 #a{
   text-align: center;
@@ -111,7 +110,7 @@ p{
       <section class="select">
         <label for="file" class="lists">
           open file
-          <input type="file" id="file" accept=".mcstructure"/>
+          <input type="file" id="file" />
         </label>
       </section>
       <section>
@@ -126,6 +125,13 @@ p{
         <li>
           <p id="sizevalue">size:1</p>
           <input type="range" style="background-color: #757575;" min="0" max="10" step="0.1" id="sizerange" value="1">
+        </li>
+        <li>
+          <p id="subdivided">subdivide</p>
+          <input type="checkbox" style="background-color: #757575;" checked onchange="subdivide()" id="subdividedbox"><br>
+        </li>
+        <li>
+          <p id="makeuv">make uv(todo)  <input type="checkbox" style="background-color: #757575;" checked onchange="uv()" id="makeuvBox"></p>
         </li>
       </ul>
     </div>
