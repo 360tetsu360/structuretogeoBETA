@@ -1,6 +1,8 @@
 var scene
 var group
-var bSize = 1;
+var bSize = 0;
+var data;
+var issub = true;
 $(function() {
   var elem = document.getElementById('sizerange');
   var target = document.getElementById('sizevalue');
@@ -15,7 +17,7 @@ $(function() {
     var file = e.target.files[0];
     var reader = new FileReader();
     reader.onload = function() {
-      var data = reader.result
+      data = reader.result
       nbt.parse(data, function(error, data) {
         if (error) {
           throw error;
@@ -36,9 +38,14 @@ function vec3_t(x1,y1,z1){
   this.y = y1;
   this.z = z1;
 }
+function vec2_t(x1,y1){
+  this.x = x1;
+  this.y = y1;
+}
 function cube(origin,size){
   this.origin = origin;
   this.size = size; 
+  this.uv = vec2_t(0,0);
 }
 var hasLoaded = false;
 var json = {
@@ -54,7 +61,7 @@ var json = {
 				"visible_bounds_offset": [0, 1, 0]
 			},"bones": [
         {
-					"name": "structure",
+					"name": "structer",
 					"pivot": [0, 0, 0],
 					"mirror": false,
 					"cubes": []
@@ -64,7 +71,8 @@ var json = {
   ]
 }
 var blocks_t = [];
-var cubes = [];
+var cubes= [];
+var cubesData = [];
 function towakariyasui(data){
   cubes = [];
   var blocks = data.value.structure.value.palette.value.default.value.block_palette.value.value;
@@ -82,7 +90,8 @@ function towakariyasui(data){
     for (let y = 0; y < poses[1]; y++) {
       var yjik = [];
       for (let z = 0; z < poses[2]; z++) {
-        if(blocks_t[bData[index]].name !="minecraft:air"){
+        if(blocks_t[bData[index]].name != "minecraft:air"){
+          cubesData.push(new cube(new vec3_t(x,y,z),new vec3_t(1,1,1)));
           var ishas = false;
           for (let i = 0; i < yjik.length; i++) {
             if(z == yjik[i].origin.z + yjik[i].size.z){
@@ -132,13 +141,18 @@ function towakariyasui(data){
       }
     }
   }
+  
   for (let i = 0; i < cubes.length; i++) {
+
+
+
+    var color = (Math.random() * 0xFF * 0x10000) + (Math.random() * 0xFF * 0x100) + (Math.random() * 0xFF * 0x1)
     const element = cubes[i];
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(
       element.size.x,
       element.size.y,
       element.size.z
-        ), new THREE.MeshNormalMaterial());
+        ), new THREE.MeshLambertMaterial({color: color}));
     mesh.position.x = element.origin.x + element.size.x/2;
     mesh.position.y = element.origin.y + element.size.y/2;
     mesh.position.z = element.origin.z + element.size.z/2;
@@ -149,23 +163,69 @@ function towakariyasui(data){
   c.textContent = "cubes:" + cubes.length;
   hasLoaded = true;
 }
+function showCubes(array){
+  while(group.children.length > 0){ 
+    group.remove(group.children[0]); 
+  }
+  for (let i = 0; i < array.length; i++) {
+    var color = (Math.random() * 0xFF * 0x10000) + (Math.random() * 0xFF * 0x100) + (Math.random() * 0xFF * 0x1)
+    const element = array[i];
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(
+      element.size.x,
+      element.size.y,
+      element.size.z
+        ), new THREE.MeshLambertMaterial({color: color}));
+    mesh.position.x = element.origin.x + element.size.x/2;
+    mesh.position.y = element.origin.y + element.size.y/2;
+    mesh.position.z = element.origin.z + element.size.z/2;
+    group.add(mesh);
+  }
+  const c = document.getElementById("cubes");
+  c.textContent = "cubes:" + array.length;
+}
 
 window.addEventListener('load', init);
 function Download(){
   if(hasLoaded){
-    for (let i = 0; i < cubes.length; i++) {
-      const element = cubes[i];
-      var a = {"origin": [element.origin.x * bSize, element.origin.y * bSize,element.origin.z * bSize], "size": [element.size.x * bSize, element.size.y * bSize, element.size.z * bSize], "uv": [0, 0]};
-      json["minecraft:geometry"][0].bones[0].cubes.push(a);
+    if(issub){
+      for (let i = 0; i < cubes.length; i++) {
+        const element = cubes[i];
+        var a = {"origin": [element.origin.x * bSize, element.origin.y * bSize,element.origin.z * bSize], "size": [element.size.x * bSize, element.size.y * bSize, element.size.z * bSize], "uv": [0, 0]};
+        json["minecraft:geometry"][0].bones[0].cubes.push(a);
+      }
+      let blob = new Blob([JSON.stringify(json,null,"  ")],{type:"text/plan"});
+      let link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'geo.json';
+      link.click();
     }
-    let blob = new Blob([JSON.stringify(json,null,"  ")],{type:"text/plan"});
-    let link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'geo.json';
-    link.click();
+    else if(!issub){
+      for (let i = 0; i < cubesData.length; i++) {
+        const element = cubesData[i];
+        var a = {"origin": [element.origin.x * bSize, element.origin.y * bSize,element.origin.z * bSize], "size": [element.size.x * bSize, element.size.y * bSize, element.size.z * bSize], "uv": [0, 0]};
+        json["minecraft:geometry"][0].bones[0].cubes.push(a);
+      }
+      let blob = new Blob([JSON.stringify(json,null,"  ")],{type:"text/plan"});
+      let link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'geo.json';
+      link.click();
+    }
   }else{
     alert("Select a file first");
   }
+}
+
+function subdivide(){
+  var checkbox = document.getElementById("subdividedbox");
+  if(checkbox.checked){
+    showCubes(cubes);
+  }else if(!checkbox.checked){
+    showCubes(cubesData);
+  }
+  if(checkbox.checked != issub){
+  }
+  issub = checkbox.checked;
 }
 function init() {
   
@@ -183,8 +243,10 @@ function init() {
   camera.position.set(50, 50, 50);
   camera.lookAt(new THREE.Vector3(0, 0, 0));
   const controls = new THREE.OrbitControls(camera, canvasElement);
-  group = new THREE.Group();5
-  scene.add(group);
+  group = new THREE.Group();
+  scene.add(group);                                   
+  const light = new THREE.HemisphereLight(0x555555, 0xAAAAAA, 1.0);
+  scene.add(light);
   tick();
   function tick() {
     renderer.render(scene, camera);
