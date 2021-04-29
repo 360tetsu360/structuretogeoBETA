@@ -143,10 +143,7 @@ function towakariyasui(data){
   }
   
   for (let i = 0; i < cubes.length; i++) {
-
-
-
-    var color = Math.round(Math.random() * 155 + 100) * 0x10000 + Math.round(Math.random() * 155 + 100) * 0x100 + Math.round(Math.random() * 200 + 100) * 0x1
+    var color = Math.round(Math.random() * 101 + 155) * 0x10000 + Math.round(Math.random() * 101 + 155) * 0x100 + Math.round(Math.random() * 101 + 155) * 0x1
     const element = cubes[i];
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(
       element.size.x,
@@ -168,7 +165,7 @@ function showCubes(array){
     group.remove(group.children[0]); 
   }
   for (let i = 0; i < array.length; i++) {
-    var color = Math.round(Math.random() * 155 + 100) * 0x10000 + Math.round(Math.random() * 155 + 100) * 0x100 + Math.round(Math.random() * 155 + 100) * 0x1
+    var color = Math.round(Math.random() * 101 + 155) * 0x10000 + Math.round(Math.random() * 101 + 155) * 0x100 + Math.round(Math.random() * 101 + 155) * 0x1
     const element = array[i];
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(
       element.size.x,
