@@ -14,6 +14,7 @@
 
 <body>
   <div id="header">
+    <img src="icon.png" class="imgs">
     Structure To Geometry
   </div>
    
@@ -21,12 +22,15 @@
     <aside>
       <section class="select">
         <label for="file" class="lists">
+          <img src="file.png" class="imgs">
           open file
           <input type="file" id="file" />
         </label>
+        
       </section>
       <section>
         <label for="dl" class="lists">
+          <img src="download.png" class="imgs">
           download
           <input type="button" id="dl" onclick="Download()" />
         </label>
@@ -40,7 +44,7 @@
         </div>
         <div class="setlist">
           <p id="subdivided">subdivide</p>
-          <input type="checkbox" style="background-color: #757575;" checked onchange="subdivide()" id="subdividedbox"><label for="subdividedbox" id="issub">true</label>
+          <input type="checkbox" style="background-color: #757575;" onchange="subdivide()" id="subdividedbox"><label for="subdividedbox" id="issub">false</label>
         </div>
         <div class="setlist">
           <p id="makeuv">make uv(beta)  <input type="checkbox" style="background-color: #757575;" checked onchange="uv()" id="makeuvBox"></p>
