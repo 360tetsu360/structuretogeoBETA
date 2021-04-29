@@ -218,6 +218,7 @@ function Download(){
 
 function subdivide(){
   var checkbox = document.getElementById("subdividedbox");
+  var checkboxlabel = document.getElementById("issub");
   if(checkbox.checked){
     showCubes(cubes);
   }else if(!checkbox.checked){
@@ -226,6 +227,7 @@ function subdivide(){
   if(checkbox.checked != issub){
   }
   issub = checkbox.checked;
+  checkboxlabel.textContent = issub;
 }
 function init() {
   
