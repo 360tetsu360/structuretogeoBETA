@@ -146,7 +146,7 @@ function towakariyasui(data){
 
 
 
-    var color = (Math.random() * 0xFF * 0x10000) + (Math.random() * 0xFF * 0x100) + (Math.random() * 0xFF * 0x1)
+    var color = Math.round(Math.random() * 155 + 100) * 0x10000 + Math.round(Math.random() * 155 + 100) * 0x100 + Math.round(Math.random() * 200 + 100) * 0x1
     const element = cubes[i];
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(
       element.size.x,
@@ -168,7 +168,7 @@ function showCubes(array){
     group.remove(group.children[0]); 
   }
   for (let i = 0; i < array.length; i++) {
-    var color = (Math.random() * 0xFF * 0x10000) + (Math.random() * 0xFF * 0x100) + (Math.random() * 0xFF * 0x1)
+    var color = Math.round(Math.random() * 155 + 100) * 0x10000 + Math.round(Math.random() * 155 + 100) * 0x100 + Math.round(Math.random() * 155 + 100) * 0x1
     const element = array[i];
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(
       element.size.x,
@@ -247,7 +247,7 @@ function init() {
   const controls = new THREE.OrbitControls(camera, canvasElement);
   group = new THREE.Group();
   scene.add(group);                                   
-  const light = new THREE.HemisphereLight(0x555555, 0xAAAAAA, 1.0);
+  const light = new THREE.HemisphereLight(0xCCCCCC, 0xAAAAAA, 1.0);
   scene.add(light);
   tick();
   function tick() {
