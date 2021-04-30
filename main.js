@@ -3,6 +3,12 @@ var group
 var bSize = 0;
 var data;
 var issub = true;
+var blockshowed = 30;
+var geoname = "minecraft:humanoid";
+var cubename = "structure";
+var dlfilename = "geo";
+var OpenedFileName = "";
+var OpenedFileSize = "";
 $(function() {
   var elem = document.getElementById('sizerange');
   var target = document.getElementById('sizevalue');
@@ -18,6 +24,7 @@ $(function() {
     var reader = new FileReader();
     reader.onload = function() {
       data = reader.result
+      
       nbt.parse(data, function(error, data) {
         if (error) {
           throw error;
@@ -25,7 +32,8 @@ $(function() {
         towakariyasui(data);
       });
     }
-
+    OpenedFileSize = file.size;
+    OpenedFileName = file.name;
     reader.readAsArrayBuffer(file);
   });
 });
@@ -61,7 +69,7 @@ var json = {
 				"visible_bounds_offset": [0, 1, 0]
 			},"bones": [
         {
-					"name": "structer",
+					"name": "structure",
 					"pivot": [0, 0, 0],
 					"mirror": false,
 					"cubes": []
@@ -157,7 +165,7 @@ function towakariyasui(data){
   }
   console.log(cubes.length);
   const c = document.getElementById("cubes");
-  c.textContent = "cubes:" + cubes.length;
+  c.textContent = `cubes: ${cubes.length} / file name: ${OpenedFileName} / file size: ${OpenedFileSize}`;
   hasLoaded = true;
 }
 function showCubes(array){
@@ -178,7 +186,7 @@ function showCubes(array){
     group.add(mesh);
   }
   const c = document.getElementById("cubes");
-  c.textContent = "cubes:" + array.length;
+  c.textContent = `cubes: ${array.length} / filename: ${OpenedFileName} / file size: ${OpenedFileSize}`;
 }
 
 window.addEventListener('load', init);
@@ -189,11 +197,13 @@ function Download(){
         const element = cubes[i];
         var a = {"origin": [element.origin.x * bSize, element.origin.y * bSize,element.origin.z * bSize], "size": [element.size.x * bSize, element.size.y * bSize, element.size.z * bSize], "uv": [0, 0]};
         json["minecraft:geometry"][0].bones[0].cubes.push(a);
+        json["minecraft:geometry"][0].description.identifier = geoname;
+        json["minecraft:geometry"][0].bones[0].name = cubename;
       }
       let blob = new Blob([JSON.stringify(json,null,"  ")],{type:"text/plan"});
       let link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'geo.json';
+      link.download = dlfilename + '.json';
       link.click();
     }
     else if(!issub){
@@ -201,11 +211,13 @@ function Download(){
         const element = cubesData[i];
         var a = {"origin": [element.origin.x * bSize, element.origin.y * bSize,element.origin.z * bSize], "size": [element.size.x * bSize, element.size.y * bSize, element.size.z * bSize], "uv": [0, 0]};
         json["minecraft:geometry"][0].bones[0].cubes.push(a);
+        json["minecraft:geometry"][0].description.identifier = geoname;
+        json["minecraft:geometry"][0].bones[0].name = cubename;
       }
       let blob = new Blob([JSON.stringify(json,null,"  ")],{type:"text/plan"});
       let link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'geo.json';
+      link.download =  dlfilename + '.json';
       link.click();
     }
   }else{
@@ -216,9 +228,9 @@ function Download(){
 function subdivide(){
   var checkbox = document.getElementById("subdividedbox");
   var checkboxlabel = document.getElementById("issub");
-  if(checkbox.checked){
+  if(!checkbox.checked){
     showCubes(cubes);
-  }else if(!checkbox.checked){
+  }else if(checkbox.checked){
     showCubes(cubesData);
   }
   if(checkbox.checked != issub){
@@ -226,8 +238,30 @@ function subdivide(){
   issub = checkbox.checked;
   checkboxlabel.textContent = issub;
 }
+function geonamechange(){
+  var geonameinput = document.getElementById("geonameinput");
+  var geonamelabel = document.getElementById("geoname");
+  geoname = geonameinput.value;
+  geonamelabel.textContent = "geometry:" +'"'+ geonameinput.value+'"';
+}
+function cubenamechange(){
+  var cubenameinput = document.getElementById("cubenameinput");
+  var cubenamelabel = document.getElementById("cubesname");
+  cubename = cubenameinput.value;
+  cubenamelabel.textContent = "cube name:" +'"'+ cubenameinput.value+'"';
+}
+function filenamechange(){
+  var filenameinput = document.getElementById("filenameinput");
+  var filenamelabel = document.getElementById("filename");
+  dlfilename = filenameinput.value;
+  filenamelabel.textContent = "file name:" +'"'+ filenameinput.value+'.json"';
+}
+var pointer;
+var raycaster;
+let INTERSECTED;
 function init() {
-  
+  document.oncontextmenu = function () {return false;}
+  pointer = new THREE.Vector2();
   const parent = document.getElementById("canvas");
   const width = parent.clientWidth;
   const height = parent.clientHeight;
@@ -246,9 +280,53 @@ function init() {
   scene.add(group);                                   
   const light = new THREE.HemisphereLight(0xCCCCCC, 0xAAAAAA, 1.0);
   scene.add(light);
+  
+  window.addEventListener( 'resize',()=>{
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }, false );
+  const geometry = new THREE.BoxGeometry( 30, 30, 30 );
+  const material = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
+  const cube = new THREE.Mesh( geometry, material );
+  //scene.add( cube );
+  parent.addEventListener( 'mousemove', onPointerMove );
+  raycaster = new THREE.Raycaster();
   tick();
   function tick() {
+    //cube.size.x ++;
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( group.children );
+    if ( intersects.length > 0 ) {
+
+      if ( INTERSECTED != intersects[ 0 ].object ) {
+
+        if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+
+        INTERSECTED = intersects[ 0 ].object;
+        INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+        INTERSECTED.material.emissive.setHex( 0xFFFFFF );
+
+      }
+
+    } else {
+
+      if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+
+      INTERSECTED = null;
+
+    }
+
     renderer.render(scene, camera);
     requestAnimationFrame(tick);
   }
+}
+
+function onPointerMove( event ) {
+  var rect = event.target.getBoundingClientRect();
+  var mouseX = event.clientX - rect.left;
+  var mouseY = event.clientY - rect.top;
+  pointer.x = ( mouseX / rect.width) * 2 - 1;
+  pointer.y = - ( mouseY / rect.height) * 2 + 1;
+
 }
