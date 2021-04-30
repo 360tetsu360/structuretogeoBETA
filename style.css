@@ -32,7 +32,7 @@ body {
   top: 40px;
   margin-left:20%;
   width: 80%;
-  background-color:#000000;
+  background-color:#000711;
   box-shadow: inset 0 0 10px rgb(50, 50, 50);
 }
 #bottom { 
@@ -60,6 +60,7 @@ body {
   text-align: center;
   line-height: 40px;
   font-size: 20px;
+  cursor: pointer;
 }
 .lists:hover{
   background-color: #7c7c7c;
@@ -117,6 +118,7 @@ p{
   margin-left: 10%;
   margin-right: 10%;
   margin-top: 10px;
+  overflow-wrap: break-word;
 }
 .container1{
   margin-top: 10%;
@@ -166,4 +168,26 @@ p{
 }
 .imgs{
     height: 40%;
+}
+.icon{
+    top: 15%;
+    position: relative;    
+    height: 60%;
+    border-radius: 30%;
+}
+.input{
+  margin-top: 5px;
+  width: 100%;
+  height: 15px;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 3px;
+  border: 0px solid;
+  box-shadow: inset 0 0 3px rgb(75, 75, 75);
+  box-sizing: border-box;
+}
+.input:focus {
+  border: 1px solid #ffffff; 
+  z-index: 10;
+  outline: 0;
 }
