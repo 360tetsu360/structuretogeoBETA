@@ -14,7 +14,7 @@
 
 <body>
   <div id="header">
-    <img src="icon.png" class="imgs">
+    <img src="icon.png" class="icon">
     Structure To Geometry
   </div>
    
@@ -39,6 +39,18 @@
     <div class="set">
       <div class="container1">
         <div class="setlist">
+          <p id="geoname">geometry:"minecraft:humanoid"</p>
+          <input type="text" class="input" style="background-color: #757575;" value="minecraft:humanoid" onchange="geonamechange()" oninput="geonamechange()" id="geonameinput">
+        </div>
+        <div class="setlist">
+          <p id="cubesname">cube name:"structure"</p>
+          <input type="text" class="input" style="background-color: #757575;" value="structure" onchange="cubenamechange()" oninput="cubenamechange()" id="cubenameinput">
+        </div>
+        <div class="setlist">
+          <p id="filename">file name:"geo.json"</p>
+          <input type="text" class="input" style="background-color: #757575;" value="geo" onchange="filenamechange()" oninput="filenamechange()" id="filenameinput">
+        </div>
+        <div class="setlist">
           <p id="sizevalue">size:1</p>
           <input type="range" class="range" style="background-color: #757575;" min="0" max="10" step="0.1" id="sizerange" value="1">
         </div>
@@ -47,7 +59,8 @@
           <input type="checkbox" style="background-color: #757575;" onchange="subdivide()" id="subdividedbox"><label for="subdividedbox" id="issub">false</label>
         </div>
         <div class="setlist">
-          <p id="makeuv">make uv(beta)  <input type="checkbox" style="background-color: #757575;" checked onchange="uv()" id="makeuvBox"></p>
+          <p id="makeuv">make uv(todo)</p>
+          <input type="checkbox" style="background-color: #757575;" disabled onchange="uv()" id="makeuvBox"><label for="makeuvbox" id="isuv">false</label>
         </div>
       </div>
       
@@ -59,7 +72,7 @@
   </div>
    
   <div id="bottom">
-    <p id="cubes">cubes:0</p>
+    <p id="cubes">cubes:0 / file name: / file size: </p>
   </div>
 </body>
 
